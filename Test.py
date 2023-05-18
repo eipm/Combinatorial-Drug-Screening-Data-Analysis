@@ -78,15 +78,15 @@ for file in files:
         for j, drug in enumerate(unique_drugs):
             output_data.at[row_start + i + 1, drug] = Lum_values[i, j]
 
-    # Define the output file name with the plate information
+    # Define the output file name
+    plate_name = os.path.splitext(os.path.basename(file))[0]
     output_file = f"{output_folder}/{plate_name}_output.csv"
-    
-    # Replace NaN values with blanks
-    plate_data = plate_data.fillna('')
-    
+     # Replace NaN values with blanks
+    output_data = output_data.fillna('')
+
     # Write the output data to a CSV file
-    plate_data.to_csv(output_file, index=False)
-    
+    output_data.to_csv(output_file, index=False)
+
     # Print a message indicating that the output file has been created
     print(f"Output file '{output_file}' created")
 
