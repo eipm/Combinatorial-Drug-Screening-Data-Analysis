@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import glob
+import os
 
 # Define the paths to the input and output folders
 input_folder = r'C:\Users\oma4008\OneDrive - med.cornell.edu\Desktop\Data Analysis\Manish\Input Python'
@@ -56,7 +57,18 @@ for file in files:
             concentration_rows = T.loc[plate_rows, 'Concentration'] == concentration
             for l, drug in enumerate(unique_drugs):
                 drug_rows = T.loc[plate_rows, 'Drug Name'] == drug
-                slice_data = T.loc[concentration_rows & drug_rows, 'Lum']
+                num_rows_per_concentration = len(drug_rows) // len(concentration_rows)
+                print(T.shape)
+                print(len(concentration_rows.values))
+                print(len(drug_rows.values))
+                print(len(T))
+                print(concentration_rows.values)
+                print(drug_rows.values)
+                tiled_concentration = np.tile(concentration_rows.values, num_rows_per_concentration)
+                tiled_drug = np.tile(drug_rows.values, num_rows_per_concentration)
+                print(tiled_concentration)
+                print(tiled_drug)
+                slice_data = T.loc[np.tile(concentration_rows.values, num_rows_per_concentration) & np.tile(drug_rows.values, num_rows_per_concentration), 'Lum']
                 if not slice_data.empty:
                     Lum_values[k, l] = np.nanmean(slice_data)
                 else:
@@ -66,7 +78,7 @@ for file in files:
         row_start = j * 2 + 2
         output_data.iloc[row_start, 0] = 'Average Background Normalization Value'
         output_data.iloc[row_start, 1:len(unique_drugs)+1] = avg_Lum_values_missing
-        output_data.iloc[row_start + 1:row_start + len(unique_concentrations) + 1, 0] = unique_concentrations
+        output_data.loc[row_start + 1:, 'Concentration'] = np.repeat(unique_concentrations, num_rows_per_concentration)
         output_data.iloc[row_start + 1:row_start + len(unique_concentrations) + 1, 1:len(unique_drugs)+1] = Lum_values
 
     # Define the output file name
