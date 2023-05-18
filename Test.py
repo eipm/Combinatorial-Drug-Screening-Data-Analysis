@@ -52,38 +52,32 @@ for file in files:
         # Create an array to store the average Lum values
         Lum_values = np.empty((len(unique_concentrations), len(unique_drugs)))
 
-        # Iterate over each unique concentration and drug
+        # Iterate over each unique concentration
         for k, concentration in enumerate(unique_concentrations):
-            concentration_rows = T.loc[plate_rows, 'Concentration'] == concentration
-            for l, drug in enumerate(unique_drugs):
-                drug_rows = T.loc[plate_rows, 'Drug Name'] == drug
-                num_rows_per_concentration = len(drug_rows) // len(concentration_rows)
-                print(T.shape)
-                print(len(concentration_rows.values))
-                print(len(drug_rows.values))
-                print(len(T))
-                print(concentration_rows.values)
-                print(drug_rows.values)
-                tiled_concentration = np.tile(concentration_rows.values, num_rows_per_concentration)
-                tiled_drug = np.tile(drug_rows.values, num_rows_per_concentration)
-                print(tiled_concentration)
-                print(tiled_drug)
-                slice_data = T.loc[np.tile(concentration_rows.values, num_rows_per_concentration) & np.tile(drug_rows.values, num_rows_per_concentration), 'Lum']
-                if not slice_data.empty:
-                    Lum_values[k, l] = np.nanmean(slice_data)
-                else:
-                    Lum_values[k, l] = np.nan  # or any other appropriate value to handle the empty case
+            # Get the rows where the 'Concentration' column matches the current unique concentration
+            concentration_rows = T.loc[plate_rows, 'Concentration'].fillna('').eq(concentration).values.reshape(-1, 1)
 
-        # Fill the cells with the calculated average Lum values
-        row_start = j * 2 + 2
-        output_data.iloc[row_start, 0] = 'Average Background Normalization Value'
-        output_data.iloc[row_start, 1:len(unique_drugs)+1] = avg_Lum_values_missing
-        output_data.loc[row_start + 1:, 'Concentration'] = np.repeat(unique_concentrations, num_rows_per_concentration)
-        output_data.iloc[row_start + 1:row_start + len(unique_concentrations) + 1, 1:len(unique_drugs)+1] = Lum_values
+            # Iterate over each unique drug
+            for l, drug in enumerate(unique_drugs):
+                # Get the rows where the 'Drug Name' column matches the current unique drug
+                drug_rows = T.loc[plate_rows, 'Drug Name'].fillna('').eq(drug).values.reshape(1, -1)
+                num_rows_per_concentration = len(drug_rows[0]) // len(concentration_rows)
+                slice_data = T[T['Concentration'].isin(concentration_rows) & T['Drug Name'].isin(drug_rows.flatten().tolist())]['Lum']
+
+    if not slice_data.empty:
+                Lum_values[k, l] = np.nanmean(slice_data)
+    else:
+                Lum_values[k, l] = np.nan  # or any other appropriate value to handle the empty case
+
+    # Fill the cells with the calculated average Lum values
+    row_start = j * 2 + 2
+    output_data.iloc[row_start, 0] = 'Average Background Normalization Value'
+    output_data.iloc[row_start, 1:len(unique_drugs) + 1] = avg_Lum_values_missing
+    output_data.loc[row_start + 1:, 'Concentration'] = np.repeat(unique_concentrations, num_rows_per_concentration)
+    output_data.iloc[row_start + 1:row_start + len(unique_concentrations) + 1, 1:len(unique_drugs) + 1] = Lum_values
 
     # Define the output file name
     output_file = f"{output_folder}/{os.path.basename(file).split('.')[0]}_output.csv"
-
     # Replace NaN values with blanks
     output_data = output_data.fillna('')
 
