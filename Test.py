@@ -62,7 +62,7 @@ for file in files:
                 # Get the rows where the 'Drug Name' column matches the current unique drug
                 drug_rows = T.loc[plate_rows, 'Drug Name'].fillna('').eq(drug).values.reshape(1, -1)
                 num_rows_per_concentration = len(drug_rows[0]) // len(concentration_rows)
-                slice_data = T[T['Concentration'].isin(concentration_rows) & T['Drug Name'].isin(drug_rows.flatten().tolist())]['Lum']
+                slice_data = T[T['Concentration'].isin(concentration_rows.flatten()) & T['Drug Name'].isin(drug_rows.flatten())]['Lum']
 
     if not slice_data.empty:
                 Lum_values[k, l] = np.nanmean(slice_data)
@@ -73,8 +73,10 @@ for file in files:
     row_start = j * 2 + 2
     output_data.iloc[row_start, 0] = 'Average Background Normalization Value'
     output_data.iloc[row_start, 1:len(unique_drugs) + 1] = avg_Lum_values_missing
-    output_data.loc[row_start + 1:, 'Concentration'] = np.repeat(unique_concentrations, num_rows_per_concentration)
-    output_data.iloc[row_start + 1:row_start + len(unique_concentrations) + 1, 1:len(unique_drugs) + 1] = Lum_values
+    output_data.loc[row_start + 1:, 'Concentration'] = np.repeat(unique_concentrations, num_rows_per_concentration)[:len(output_data)-row_start-1]
+    for i, concentration in enumerate(unique_concentrations):
+        for j, drug in enumerate(unique_drugs):
+            output_data.at[row_start + i + 1, drug] = Lum_values[i, j]
 
     # Define the output file name
     output_file = f"{output_folder}/{os.path.basename(file).split('.')[0]}_output.csv"
