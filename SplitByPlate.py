@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import glob
-import os
 
 # Define the paths to the input and output folders
 input_folder = r'C:\Users\oma4008\OneDrive - med.cornell.edu\Desktop\Data Analysis\Manish\Input Python'
@@ -58,24 +57,26 @@ for file in files:
 
         # Iterate over each unique concentration
         for i, concentration in enumerate(unique_concentrations):
-            # Get the rows where the 'Concentration' column matches the current unique concentration
-            concentration_rows = T.loc[plate_rows, 'Concentration'] == concentration
+        for j, drug in enumerate(unique_drugs):
+        Lum_values[i, j] = lum_dict[(concentration, drug)]
 
-            # Iterate over each unique drug
-            for j, drug in enumerate(unique_drugs):
+
+
                 # Get the rows where the 'Drug Name' column matches the current unique drug
-                drug_rows = T.loc[plate_rows, 'Drug Name'] == drug
+        drug_rows = T.loc[plate_rows, 'Drug Name'] == drug
 
                 # Get the Lum values for the current drug and concentration
-                slice_data = T.loc[plate_rows & concentration_rows & drug_rows, 'Lum']
+        slice_data = T.loc[plate_rows & concentration_rows & drug_rows, 'Lum']
 
-                if not slice_data.empty:
+        if not slice_data.empty:
                     Lum_values[i, j] = np.nanmean(slice_data)
-                else:
+        else:
                     Lum_values[i, j] = np.nan  # or any other appropriate value to handle the empty case
 
         # Fill the cells with the calculated average Lum values
-        output_data.iloc[1:, 0] = np.repeat(unique_concentrations, len(unique_drugs))
+        output_data.iloc[1:, 1:] = Lum_values
+
+
         for i, concentration in enumerate(unique_concentrations):
             for j, drug in enumerate(unique_drugs):
                 output_data.at[1, drug] = avg_Lum_values_missing
