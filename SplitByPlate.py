@@ -32,6 +32,15 @@ for file in files:
     # Get the unique values in the 'PlateName' column
     unique_plate_names = np.unique(T['Plate Name'])
 
+def calculate_average_lum_values(data):
+    # Group the data by drug and concentration
+    grouped_data = T.groupby(['Drug', 'Concentration'])
+    
+    # Calculate the average Lum value for each group
+    average_lum_values = grouped_data['Lum'].mean()
+    
+    return average_lum_values
+
     # Loop through each unique plate name value
     for plate_name in unique_plate_names:
         num_rows_per_concentration = len(T[T['Plate Name'] == unique_plate_names[0][0]])
