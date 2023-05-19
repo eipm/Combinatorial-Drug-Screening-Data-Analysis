@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import glob
+import os
 
 # Define the paths to the input and output folders
 input_folder = r'C:\Users\oma4008\OneDrive - med.cornell.edu\Desktop\Data Analysis\Manish\Input Python'
@@ -57,8 +58,8 @@ for file in files:
 
         # Iterate over each unique concentration
         for i, concentration in enumerate(unique_concentrations):
-        for j, drug in enumerate(unique_drugs):
-        Lum_values[i, j] = lum_dict[(concentration, drug)]
+            for j, drug in enumerate(unique_drugs):
+                Lum_values[i, j] = file[(concentration, drug)]
 
 
 
