@@ -13,7 +13,12 @@ for file in files:
     # Read the current file into a DataFrame using read_excel function
     filepath = os.path.join(input_folder, file)
     T = pd.read_excel(filepath)
-
+    # Split the data into separate dataframes
+    dfs = []
+    for i in range(0, len(T), 10):
+        dfs.append(T.iloc[i:i+10])
+    # Concatenate the dataframes and reset the index
+    T = pd.concat(dfs, ignore_index=True)
     # Flip the rows of the table from row to row
     T.iloc[150:280, :] = T.iloc[150:280, :].iloc[::-1]
     T.iloc[430:560, :] = T.iloc[430:560, :].iloc[::-1]
@@ -21,7 +26,7 @@ for file in files:
     T.iloc[990:1120, :] = T.iloc[990:1120, :].iloc[::-1]
     T.iloc[1270:1400, :] = T.iloc[1270:1400, :].iloc[::-1]
     T.iloc[1550:1680, :] = T.iloc[1550:1680, :].iloc[::-1]
-
+    
     # Get the unique values in the 'PlateName' column using the unique function
     unique_plate_names = T['Plate Name'].unique()
     # Loop through each row of the table and replace values in the 'Concentration' column that meet the specified condition
@@ -146,7 +151,7 @@ for file in files:
             T.loc[n-3, 'Concentration'] = 0.003703704
             T.loc[n-2, 'Concentration'] = 0.011111111
             T.loc[n-1, 'Concentration'] = 0.03333333
-            T.loc[n, 'Concentration'] = 0.1
+            T.loc[n, 'Concentration'] = 0.101
 
     # Loop through each row of the table and replace values in the 'Concentration' column that meet the specified condition
     for n in range(len(T)-1):
@@ -189,7 +194,7 @@ for file in files:
             T.loc[n-4, 'Concentration'] = 0.03703671
             T.loc[n-3, 'Concentration'] = 0.1111109
             T.loc[n-2, 'Concentration'] = 0.33333301
-            T.loc[n-1, 'Concentration'] = 1
+            T.loc[n-1, 'Concentration'] = 1.01
             T.loc[n, 'Concentration'] = 3
 
     # Loop through each unique plate name value
@@ -239,9 +244,10 @@ for file in files:
         # Add an empty row after every 10 rows of data (excluding the first three rows and the newly added rows)
         for f in range(4, min(output_data.shape[0], 200)):
             if (f - 4) % 12 == 0 and f > 3:
-                output_data = pd.concat([output_data.iloc[:f-1, :], pd.DataFrame(index=range(2),
-                                                                                  columns=range(output_data.shape[1])),
-                                         output_data.iloc[f-1:, :]], ignore_index=True)
+                output_data = pd.concat([output_data.iloc[:f, :], pd.DataFrame(index=range(2),
+                                                                            columns=output_data.columns),
+                                        output_data.iloc[f:, :]], ignore_index=True)
+
 
         # Define the output file name based on the current plate name
         output_file = os.path.join(output_folder, plate_name + '.csv')
