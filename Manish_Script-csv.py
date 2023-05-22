@@ -5,14 +5,14 @@ import pandas as pd
 input_folder = r'C:\Users\oma4008\OneDrive - med.cornell.edu\Desktop\Data Analysis\Manish\Input Python'
 output_folder = r'C:\Users\oma4008\OneDrive - med.cornell.edu\Desktop\Data Analysis\Manish\Output'
 
-# Use the os.listdir() function to get a list of files in the input folder with the extension '.xlsx'
-files = [f for f in os.listdir(input_folder) if f.endswith('.xlsx')]
+# Use the os.listdir() function to get a list of files in the input folder with the extension '.csv'
+files = [f for f in os.listdir(input_folder) if f.endswith('.csv')]
 
 # Loop through each file in the input folder
 for file in files:
-    # Read the current file into a DataFrame using read_excel function
+    # Read the current file into a DataFrame using read_csv function
     filepath = os.path.join(input_folder, file)
-    T = pd.read_excel(filepath)
+    T = pd.read_csv(filepath)
 
     # Get the unique values in the 'PlateName' column using the unique function
     unique_plate_names = T['Plate Name'].unique()
@@ -21,7 +21,7 @@ for file in files:
 for n in range(len(T)-1):
     if T.loc[n, 'Concentration'] == 1.111:
         T.loc[n, 'Concentration'] = 1.1111
-
+        
     # Loop through each unique plate name value
     for plate_name in unique_plate_names:
         # Get the rows of the table where the 'PlateName' column is equal to the current unique plate name
