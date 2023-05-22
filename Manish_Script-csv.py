@@ -14,6 +14,14 @@ for file in files:
     filepath = os.path.join(input_folder, file)
     T = pd.read_csv(filepath)
 
+    # Flip the rows of the table from row to row
+    T.iloc[150:280, :] = T.iloc[150:280, :].iloc[::-1]
+    T.iloc[430:560, :] = T.iloc[430:560, :].iloc[::-1]
+    T.iloc[710:840, :] = T.iloc[710:840, :].iloc[::-1]
+    T.iloc[990:1120, :] = T.iloc[990:1120, :].iloc[::-1]
+    T.iloc[1270:1400, :] = T.iloc[1270:1400, :].iloc[::-1]
+    T.iloc[1550:1680, :] = T.iloc[1550:1680, :].iloc[::-1]
+
     # Get the unique values in the 'PlateName' column using the unique function
     unique_plate_names = T['Plate Name'].unique()
 
