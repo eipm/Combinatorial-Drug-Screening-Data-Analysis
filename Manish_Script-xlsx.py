@@ -13,6 +13,7 @@ for file in files:
     # Read the current file into a DataFrame using read_excel function
     filepath = os.path.join(input_folder, file)
     T = pd.read_excel(filepath)
+    
     # Split the data into separate dataframes
     dfs = []
     for i in range(0, len(T), 10):
@@ -196,6 +197,22 @@ for file in files:
             T.loc[n-2, 'Concentration'] = 0.33333301
             T.loc[n-1, 'Concentration'] = 1.01
             T.loc[n, 'Concentration'] = 3
+
+    # Loop through each row of the table and replace values in the 'Concentration' column that meet the specified condition.
+    for n in range(len(T['Concentration']) - 1):
+        if T['Concentration'][n] == 0.12345679:
+            T.at[n, 'Concentration'] = 0.1234679
+
+    # Loop through each row of the table and replace values in the 'Concentration' column that meet the specified condition.
+    for n in range(len(T['Concentration']) - 1):
+        if T['Concentration'][n] == 1.111:
+            T.at[n, 'Concentration'] = 1.1111
+
+    # Loop through each row of the table and replace values in the 'Concentration' column that meet the specified condition.
+    for n in range(len(T['Concentration']) - 1):
+        if T['Concentration'][n] == 3.333333333:
+            T.at[n, 'Concentration'] = 3.333
+
 
     # Loop through each unique plate name value
     for plate_name in unique_plate_names:
