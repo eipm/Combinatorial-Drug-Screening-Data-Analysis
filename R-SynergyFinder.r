@@ -22,7 +22,7 @@ library(readxl)
 ## ----message=FALSE------------------------------------------------------------
 library(synergyfinder)
 
-example_file <- file.choose("C:/Users/oma4008/OneDrive - med.cornell.edu/Documents/Manish.PM1352.DRC.PLATES.082322.csv")
+example_file <- file.choose("C:/Users/oma4008/OneDrive - med.cornell.edu/Desktop/Data Analysis/Flor/R analysis/Flor_Combo_Gefitinib.Plate1.061423.xlsx")
 data <- read_excel(example_file)
 
 ## -----------------------------------------------------------------------------
