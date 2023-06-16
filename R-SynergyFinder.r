@@ -5,16 +5,18 @@ knitr::opts_chunk$set(
 )
 
 # ## ----eval=FALSE---------------------------------------------------------------
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# 
-# BiocManager::install("synergyfinder")
+ if (!requireNamespace("BiocManager", quietly = TRUE))
+   install.packages("BiocManager")
+ 
+ BiocManager::install("synergyfinder")
+install.packages("readxl")
+library(readxl)
 
 ## ----message=FALSE------------------------------------------------------------
 library(synergyfinder)
 
 example_file <- file.choose("C:/Users/oma4008/OneDrive - med.cornell.edu/Documents/Manish.PM1352.DRC.PLATES.082322.csv")
-data <- read.csv(example_file)
+data <- read_excel(example_file)
 
 ## -----------------------------------------------------------------------------
 res <- ReshapeData(
