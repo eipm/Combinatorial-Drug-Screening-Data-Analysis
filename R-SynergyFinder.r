@@ -1,3 +1,10 @@
+library(ggplot2)  # Make sure ggplot2 is loaded
+
+# Set the output format and directory
+output_format <- "pdf"  # Change this to the desired output format: pdf, png, jpeg, svg, etc.
+output_dir <- "C:/Users/oma4008/OneDrive - med.cornell.edu/Documents/R-Synergy/R-output"  # Change this to the desired output directory
+
+
 ## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -42,8 +49,6 @@ res <- CalculateSynergy(
 res$drug_pairs
 str(res$synergy_scores)
 
-## ----fig.cap="Figure 1. Concept of RI", fig.show="hold", out.width="60%"------
-knitr::include_graphics("C:/Users/oma4008/AppData/Local/R/win-library/4.3/knitr")
 
 ## ----message=FALSE, warning=FALSE---------------------------------------------
 res <- CalculateSensitivity(
@@ -59,16 +64,20 @@ sensitive_columns <- c(
   "css1_ic502", "css2_ic501", "css")
 res$drug_pairs[, sensitive_columns]
 
-## ----message=FALSE, warning=FALSE, fig.width=7, fig.height=4, out.width="100%"----
+# Open a PDF graphics device
+pdf("plot1.pdf")
+
+## ----message=FALSE, warning=FALSE, fig.width=7, fig.height=4, out.width="100%", fig.keep = 'all'----
 for (i in c(1, 2)){
   PlotDoseResponseCurve(
     data = res,
     plot_block = 1,
     drug_index = i,
     plot_new = FALSE,
-    record_plot = FALSE
+    record_plot = TRUE
   )
 }
+
 
 ## ----fig.show="hold", fig.width=7, fig.height=4, out.width="100%"-------------
 Plot2DrugHeatmap(
@@ -146,10 +155,6 @@ for (v in c("response", "ZIP_synergy")) {
     file_type = "png"
   )
 
-## ----fig.width=6, fig.height=4, fig.show="hold", out.width="100%", echo=FALSE----
-#knitr::include_graphics("./ispinesib_ibrutinib_adjusted_dose_response_block_1.png")
-#knitr::include_graphics("./canertinib_ibrutinib_adjusted_dose_response_block_2.png")
-  knitr::include_graphics("C:/Users/oma4008/AppData/Local/R/win-library/4.3/knitr")
   
 ## ----fig.width=6, fig.height=4, eval=FALSE------------------------------------
   PlotSynergy(
@@ -162,10 +167,6 @@ for (v in c("response", "ZIP_synergy")) {
     file_type = "png"
   )
 
-## ----fig.width=6, fig.height=4, fig.show="hold", out.width="100%", echo=FALSE----
-#knitr::include_graphics("./ispinesib_ibrutinib_synergy_1_ZIP_2D.png")
-#knitr::include_graphics("./canertinib_ibrutinib_synergy_2_ZIP_2D.png")
-  knitr::include_graphics("C:/Users/oma4008/AppData/Local/R/win-library/4.3/knitr")
 
 ## ----fig.width=6, fig.height=4, fig.show="hold", out.width="100%"-------------
 # Block1: ispinesib (drug1) 9.7656 nM + ibrutinib (drug2) 50 nM
